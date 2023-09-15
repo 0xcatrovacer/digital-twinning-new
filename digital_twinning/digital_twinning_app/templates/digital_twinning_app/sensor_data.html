@@ -37,14 +37,14 @@
     <div class="container">
         <div class="left-side">
             <h2>Acceleration:</h2>
-            <p>x: {{ sensor_data.x }}</p>
-            <p>y: {{ sensor_data.y }}</p>
-            <p>z: {{ sensor_data.z }}</p>
+            <p id="acceleration-x">x: </p>
+            <p id="acceleration-y">y: </p>
+            <p id="acceleration-z">z: </p>
 
             <h2>Gyroscope:</h2>
-            <p>x: {{ sensor_data.x }}</p>
-            <p>y: {{ sensor_data.y }}</p>
-            <p>z: {{ sensor_data.z }}</p>
+            <p id="gyroscope-x">x: </p>
+            <p id="gyroscope-y">y: </p>
+            <p id="gyroscope-z">z: </p>
         </div>
         <div class="right-side">
             <h2>3D Model:</h2>
@@ -82,7 +82,12 @@
             const response = await fetch('api/sensor_data/');
             const sensorData = await response.json();
 
-            console.log(sensorData);
+            document.getElementById('acceleration-x').innerText = `x: ${sensorData.x * Math.random() * 20}`;
+            document.getElementById('acceleration-y').innerText = `y: ${sensorData.y * Math.random() * 20}`;
+            document.getElementById('acceleration-z').innerText = `z: ${sensorData.z * Math.random() * 20}`;
+            document.getElementById('gyroscope-x').innerText = `x: ${sensorData.x}`;
+            document.getElementById('gyroscope-y').innerText = `y: ${sensorData.y}`;
+            document.getElementById('gyroscope-z').innerText = `z: ${sensorData.z}`;
 
             if (mesh) {
                 const rotationX = parseFloat(sensorData['x']);
