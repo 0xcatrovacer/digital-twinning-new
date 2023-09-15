@@ -5,7 +5,7 @@ python3 -m venv digital-twin
 
 source digital-twin/bin/activate
 
-pip3 install django
+pip3 install -r requirements.txt
 
 cd ./digital_twinning
 
