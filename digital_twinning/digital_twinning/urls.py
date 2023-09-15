@@ -5,7 +5,7 @@ from digital_twinning_app.views import SensorDataAPI
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.sensor_data, name='root'),  # Redirect root URL to sensor_data
-    path('sensor_data/', views.sensor_data, name='sensor_data'),
-    path('api/sensor-data/', SensorDataAPI.as_view(), name='sensor-data-api'),
+    path('', views.sensor_data_page, name='root'),
+    path('sensor_data/', views.sensor_data_page, name='sensor_data_page'),
+    path('api/sensor_data/', views.api_sensor_data, name='api_sensor_data')
 ]

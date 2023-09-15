@@ -3,6 +3,17 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import render
 from .models import SensorData
+from django.http import JsonResponse
+import csv
+
+
+def read_csv_file(file_path):
+    sensor_data_list = []
+    with open(file_path, 'r') as file:
+        csv_reader = csv.DictReader(file)
+        for row in csv_reader:
+            sensor_data_list.append(row)
+    return sensor_data_list
 
 class SensorDataAPI(APIView):
     def post(self, request):
@@ -30,13 +41,25 @@ class SensorDataAPI(APIView):
         except Exception as e:
             return Response({"message": f"Error: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
-
-def sensor_data(request):
+def sensor_data_page(request):
     sensor_data = SensorData.objects.order_by('-timestamp').first()
-
     context = {
         'sensor_data': sensor_data,
     }
-
     return render(request, 'digital_twinning_app/sensor_data.html', context)
+
+
+current_row = 0
+
+# For serving the JSON data
+def api_sensor_data(request):
+    global current_row
+    sensor_data_list = read_csv_file('./digital_twinning_app/static/data/user1_adl1.csv')
+
+    if current_row >= len(sensor_data_list):
+        current_row = 0
+
+    data = sensor_data_list[current_row]
+    current_row += 1
+
+    return JsonResponse(data)

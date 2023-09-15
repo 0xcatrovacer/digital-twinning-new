@@ -28,7 +28,6 @@
             max-width: 100%;
             max-height: 100%;
             transition: transform 0.2s ease;
-            /* Add transition for smooth rotation */
         }
     </style>
 </head>
@@ -38,19 +37,18 @@
     <div class="container">
         <div class="left-side">
             <h2>Acceleration:</h2>
-            <p>x: {{ sensor_data.acceleration_x }}</p>
-            <p>y: {{ sensor_data.acceleration_y }}</p>
-            <p>z: {{ sensor_data.acceleration_z }}</p>
+            <p>x: {{ sensor_data.x }}</p>
+            <p>y: {{ sensor_data.y }}</p>
+            <p>z: {{ sensor_data.z }}</p>
 
             <h2>Gyroscope:</h2>
-            <p>x: {{ sensor_data.gyroscope_x }}</p>
-            <p>y: {{ sensor_data.gyroscope_y }}</p>
-            <p>z: {{ sensor_data.gyroscope_z }}</p>
+            <p>x: {{ sensor_data.x }}</p>
+            <p>y: {{ sensor_data.y }}</p>
+            <p>z: {{ sensor_data.z }}</p>
         </div>
         <div class="right-side">
             <h2>3D Model:</h2>
-            <div id="sensor-3d" data-gyroscope-x="{{ sensor_data.gyroscope_x }}"
-                data-gyroscope-y="{{ sensor_data.gyroscope_y }}" data-gyroscope-z="{{ sensor_data.gyroscope_z }}"></div>
+            <div id="sensor-3d"></div>
         </div>
     </div>
 
@@ -61,9 +59,6 @@
         const renderer = new THREE.WebGLRenderer();
         const scene = new THREE.Scene();
         const sensorElement = document.getElementById('sensor-3d');
-        const gyroscope_x = parseFloat(sensorElement.getAttribute('data-gyroscope-x'));
-        const gyroscope_y = parseFloat(sensorElement.getAttribute('data-gyroscope-y'));
-        const gyroscope_z = parseFloat(sensorElement.getAttribute('data-gyroscope-z'));
         const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight);
         let mesh;
 
@@ -82,24 +77,34 @@
             mesh = model;
         });
 
-        function animate() {
-            if (mesh) {
-                if (!isNaN(gyroscope_x) && !isNaN(gyroscope_y) && !isNaN(gyroscope_z)) {
-                    const rotationY = gyroscope_y;
-                    const rotationZ = gyroscope_z;
-                    const rotationX = gyroscope_x;
+        // Function to update the 3D model based on sensor data
+        async function fetchAndUpdate() {
+            const response = await fetch('api/sensor_data/');
+            const sensorData = await response.json();
 
+            console.log(sensorData);
+
+            if (mesh) {
+                const rotationX = parseFloat(sensorData['x']);
+                const rotationY = parseFloat(sensorData['y']);
+                const rotationZ = parseFloat(sensorData['z']);
+
+                if (!isNaN(rotationX) && !isNaN(rotationY) && !isNaN(rotationZ)) {
                     mesh.rotation.set(rotationX, rotationY, rotationZ);
                 }
             }
+        }
 
+        // Fetch new data every second
+        setInterval(fetchAndUpdate, 1000);
+
+        // Function to animate the 3D model
+        function animate() {
             renderer.render(scene, camera);
-
             requestAnimationFrame(animate);
-        };
+        }
 
         animate();
-
         document.getElementById('sensor-3d').appendChild(renderer.domElement);
     </script>
 </body>
