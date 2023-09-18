@@ -45,6 +45,11 @@
             <p id="gyroscope-x">x: </p>
             <p id="gyroscope-y">y: </p>
             <p id="gyroscope-z">z: </p>
+            
+            <h2>Magnetometer:</h2>
+            <p id="magnetometer-x">x: </p>
+            <p id="magnetometer-y">y: </p>
+            <p id="magnetometer-z">z: </p>
         </div>
         <div class="right-side">
             <h2>3D Model:</h2>
@@ -82,17 +87,22 @@
             const response = await fetch('api/sensor_data/');
             const sensorData = await response.json();
 
-            document.getElementById('acceleration-x').innerText = `x: ${sensorData.x * Math.random() * 20}`;
-            document.getElementById('acceleration-y').innerText = `y: ${sensorData.y * Math.random() * 20}`;
-            document.getElementById('acceleration-z').innerText = `z: ${sensorData.z * Math.random() * 20}`;
-            document.getElementById('gyroscope-x').innerText = `x: ${sensorData.x}`;
-            document.getElementById('gyroscope-y').innerText = `y: ${sensorData.y}`;
-            document.getElementById('gyroscope-z').innerText = `z: ${sensorData.z}`;
+            console.log(sensorData)
+
+            document.getElementById('acceleration-x').innerText = `x: ${sensorData.acc_x}`;
+            document.getElementById('acceleration-y').innerText = `y: ${sensorData.acc_y}`;
+            document.getElementById('acceleration-z').innerText = `z: ${sensorData.acc_z}`;
+            document.getElementById('gyroscope-x').innerText = `x: ${sensorData.gyro_x}`;
+            document.getElementById('gyroscope-y').innerText = `y: ${sensorData.gyro_y}`;
+            document.getElementById('gyroscope-z').innerText = `z: ${sensorData.gyro_z}`;
+            document.getElementById('magnetometer-x').innerText = `x: ${sensorData.mgm_x}`;
+            document.getElementById('magnetometer-y').innerText = `y: ${sensorData.mgm_y}`;
+            document.getElementById('magnetometer-z').innerText = `z: ${sensorData.mgm_z}`;
 
             if (mesh) {
-                const rotationX = parseFloat(sensorData['x']);
-                const rotationY = parseFloat(sensorData['y']);
-                const rotationZ = parseFloat(sensorData['z']);
+                const rotationX = parseFloat(sensorData['gyro_x']);
+                const rotationY = parseFloat(sensorData['gyro_y']);
+                const rotationZ = parseFloat(sensorData['gyro_z']);
 
                 if (!isNaN(rotationX) && !isNaN(rotationY) && !isNaN(rotationZ)) {
                     mesh.rotation.set(rotationX, rotationY, rotationZ);

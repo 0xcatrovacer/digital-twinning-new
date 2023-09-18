@@ -25,7 +25,7 @@ class SensorDataAPI(APIView):
             values = input_string.split(" ")
 
             
-            keys = ['acceleration_x', 'acceleration_y', 'acceleration_z', 'gyroscope_x', 'gyroscope_y', 'gyroscope_z']
+            keys = ['acceleration_x', 'acceleration_y', 'acceleration_z', 'gyroscope_x', 'gyroscope_y', 'gyroscope_z', 'magnetometer_x', 'magnetometer_y', 'magnetometer_z']
 
             
             sensor_data = {key: float(value) for key, value in zip(keys, values)}
@@ -42,7 +42,7 @@ class SensorDataAPI(APIView):
             return Response({"message": f"Error: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 def sensor_data_page(request):
-    sensor_data = SensorData.objects.order_by('-timestamp').first()
+    sensor_data = SensorData.objects.first()
     context = {
         'sensor_data': sensor_data,
     }
@@ -54,7 +54,7 @@ current_row = 0
 # For serving the JSON data
 def api_sensor_data(request):
     global current_row
-    sensor_data_list = read_csv_file('./digital_twinning_app/static/data/user1_adl1.csv')
+    sensor_data_list = read_csv_file('./digital_twinning_app/static/data/output_data.csv')
 
     if current_row >= len(sensor_data_list):
         current_row = 0
